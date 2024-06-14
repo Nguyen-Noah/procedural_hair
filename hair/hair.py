@@ -1,4 +1,3 @@
-import pygame, math, os
 from primitives.vec2 import vec2
 
 def lerp(v1, v2, t):
@@ -13,8 +12,9 @@ class HairPart:
     def __init__(self, target, img, main_hair_part=False):
         self.target = target                  # the target position that each hair part wants to be at
         self.img = img
-        self.main_hair_part = main_hair_part         # 
+        self.main_hair_part = main_hair_part
 
+        # eventually want to pass in as kwargs
         self.lerp_speed = 5                      # speed in which hair part moves to new distance
         self.max_distance = 3                    # the max distance in which the hair part can move
         self.gravity = 0.5                       # the gravity of the hair part
@@ -44,7 +44,6 @@ class HairPart:
         # applying gravity
         self.position = vec2(self.position.x, self.position.y + self.gravity)
 
-        #print(type(self.target))
         difference = vec2(self.position - self.target.position)
         direction = vec2(difference.normalize())
         dist = min(self.max_distance, difference.magnitude())
@@ -60,13 +59,19 @@ class HairPart:
         surf.blit(self.img, self.position.tuple)
 
 class Hair:
+    """
+    This class is the manager for the hair entity.
+    """
     def __init__(self, game, owner):
+        """
+        :game: used to access assets
+        :owner: most likely a Player object, used as anchor for hair
+        """
         self.game = game
         self.owner = owner
         self.hair_segments = []
 
-        # temp
-        self.segment_offset = 2
+        self.gen_hair()
 
     def gen_hair(self):
         # Initializing the anchor of the hair, this piece will remain static on the player's head
@@ -79,7 +84,6 @@ class Hair:
             segment.init_hair(self.owner)
 
     def update(self, dt):
-        print(self.hair_segments[0].target)
         for segment in self.hair_segments:
             segment.update(dt)
 
@@ -91,6 +95,28 @@ class Hair:
         print('--------------------')
         for i, segment in enumerate(self.hair_segments):
             print(f'Segment {i} at position: {segment.position}')
+
+""" example usage:
+    class Player:
+        def __init__(self, game, var1, var2):
+            self.game = game
+            self.var1 = var1
+            self.var2 = var2
+
+            self.hair_gravity = None        <- delegate function to change the gravity of each segment
+            self.hair = Hair(game, self)    <- game is only needed to access the assets used for each hair segment, can be changed to asset folder for simplification
+
+        def update(self, dt):
+            update player
+
+            if self.is_grounded:
+                self.hair_gravity(-.1)
+            else:
+                self.hair_gravity(-.025)
+            self.hair.update(dt)
+
+        def render(surf):
+            self.hair.render(surf) """
 
 hair_offsets = {
     "path": "idle",

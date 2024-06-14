@@ -79,8 +79,3 @@ class vec2:
     
     def __repr__(self):
         return self.__str__()
-
-temp = vec2(0, 0)
-temp_to_add = vec2(10, 20)
-
-temp += temp_to_add

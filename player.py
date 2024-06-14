@@ -22,8 +22,6 @@ class Player:
         self.hair_gravity = None        # delegate function retrieved from the hair segments
 
         self.hair = Hair(game, self)
-        self.hair.gen_hair()
-
 
     def handle_input(self, inputs):
         if inputs['left']:
